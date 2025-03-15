@@ -9,7 +9,7 @@
 `define DISPLAY_HEIGHT 48  
 `define BLOCK_SIZE 10      
 
-module fruit_generator_counter(
+module collision_detection(
     input wire clk,
     input wire reset,
     input wire [`COORD_WIDTH-1:0] snakehead_x,
@@ -70,13 +70,8 @@ module fruit_generator_counter(
                 snake_length_out <= 1;  // Reset snake length to 1
                 
                 // Generate new position ensuring it's within valid screen bounds
-                // Using modulo to stay within display dimensions (minus margins for safety)
-                // For display size 64x48, we'd generate positions between 2-61 for x and 2-45 for y
                 new_head_x <= (random_number[7:0] % (`DISPLAY_WIDTH - 4)) + 2;  
                 new_head_y <= (random_number[15:8] % (`DISPLAY_HEIGHT - 4)) + 2;
-                
-                // We don't need to do anything special for length 1,
-                // as snake_length_out <= 1 already handles this
             end
         end
     end

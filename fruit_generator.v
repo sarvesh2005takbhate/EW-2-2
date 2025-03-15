@@ -11,6 +11,7 @@
 `define MAX_LENGTH 63   
 `define LENGTH_WIDTH 6  
 
+
 // Display dimensions based on actual display board we can change it
 `define DISPLAY_WIDTH 64  
 `define DISPLAY_HEIGHT 48  
