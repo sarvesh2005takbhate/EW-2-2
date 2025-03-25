@@ -12,7 +12,8 @@ module VGA_controller(
     // Game state inputs
     input wire [`COORD_WIDTH-1:0] snake_head_x,
     input wire [`COORD_WIDTH-1:0] snake_head_y,
-    input wire [(`COORD_WIDTH*(`MAX_LENGTH+1))-1:0] snake_body_flat,
+    input wire [(`COORD_WIDTH*(`MAX_LENGTH+1))-1:0] snake_body_x_flat,
+    input wire [(`COORD_WIDTH*(`MAX_LENGTH+1))-1:0] snake_body_y_flat,
     input wire [`LENGTH_WIDTH-1:0] snake_length,
     input wire [`COORD_WIDTH-1:0] fruit_x,
     input wire [`COORD_WIDTH-1:0] fruit_y,
@@ -41,6 +42,13 @@ module VGA_controller(
     parameter V_SYNC_PULSE = 3;
     parameter V_BACK_PORCH = 24;
     parameter V_TOTAL = V_DISPLAY + V_FRONT_PORCH + V_SYNC_PULSE + V_BACK_PORCH;
+    
+    // Game area parameters
+    parameter GAME_AREA_TOP = 100;  // Top position of game area
+    parameter SCORE_AREA_TOP = 20;  // Top position of score display
+    parameter BORDER_WIDTH = 5;     // Width of the game border
+    parameter X_SCALE_FACTOR = H_DISPLAY / `DISPLAY_WIDTH;  // Scale factor for X coordinates
+    parameter Y_SCALE_FACTOR = (V_DISPLAY - GAME_AREA_TOP) / `DISPLAY_HEIGHT;  // Scale factor for Y coordinates
 
     // Internal counters
     reg [10:0] h_counter;
@@ -49,16 +57,6 @@ module VGA_controller(
     // Pixel clock divider (approx. 85.5MHz from 100MHz clock)
     reg [2:0] clock_divider;
     wire pixel_clock_enable;
-
-    // Scaling factors for game to display coordinates
-    parameter X_SCALE_FACTOR = H_DISPLAY / `DISPLAY_WIDTH;
-    parameter Y_SCALE_FACTOR = V_DISPLAY / `DISPLAY_HEIGHT;
-    
-    // Display area definitions
-    parameter SCORE_AREA_TOP = 20;
-    parameter SCORE_AREA_HEIGHT = 50;
-    parameter BORDER_WIDTH = 2;
-    parameter GAME_AREA_TOP = SCORE_AREA_TOP + SCORE_AREA_HEIGHT;
 
     assign pixel_clock_enable = (clock_divider != 3'b110);
 
@@ -78,8 +76,8 @@ module VGA_controller(
     integer i;
     always @(*) begin
         for (i = 0; i <= `MAX_LENGTH; i = i + 1) begin
-            snake_body_x[i] = snake_body_flat[(`COORD_WIDTH*i) +: `COORD_WIDTH];
-            snake_body_y[i] = 0; // Assuming missing `snake_body_y_flat` input
+            snake_body_x[i] = snake_body_x_flat[(`COORD_WIDTH*i) +: `COORD_WIDTH];
+            snake_body_y[i] = snake_body_y_flat[(`COORD_WIDTH*i) +: `COORD_WIDTH];
         end
     end
 
@@ -99,7 +97,7 @@ module VGA_controller(
                 h_counter <= h_counter + 1;
             end
         end
-    end
+    end  // Add missing 'end' here
 
     // Generate sync signals
     always @(posedge clk or posedge reset) begin
@@ -110,7 +108,7 @@ module VGA_controller(
             hsync <= ~(h_counter >= H_DISPLAY + H_FRONT_PORCH && h_counter < H_DISPLAY + H_FRONT_PORCH + H_SYNC_PULSE);
             vsync <= ~(v_counter >= V_DISPLAY + V_FRONT_PORCH && v_counter < V_DISPLAY + V_FRONT_PORCH + V_SYNC_PULSE);
         end
-    end
+    end  // Add missing 'end' here
 
     // Convert scaled game coordinates to screen coordinates
     function [10:0] scale_x;
@@ -126,6 +124,10 @@ module VGA_controller(
             scale_y = game_y * Y_SCALE_FACTOR + GAME_AREA_TOP;
         end
     endfunction
+    
+    reg [10:0] game_coord_x;
+   
+    reg [9:0] game_coord_y;
 
     // RGB output
     always @(posedge clk or posedge reset) begin
@@ -176,9 +178,10 @@ module VGA_controller(
                         green <= 4'h0;
                         blue <= 4'h0;
                     end
-                } 
+                
                 
                 // Game border
+                end 
                 else if (v_counter == GAME_AREA_TOP || v_counter == V_DISPLAY - 1 || 
                          v_counter == GAME_AREA_TOP + BORDER_WIDTH || v_counter == V_DISPLAY - 1 - BORDER_WIDTH ||
                          h_counter == 0 || h_counter == H_DISPLAY - 1 ||
@@ -186,13 +189,14 @@ module VGA_controller(
                     red <= 4'hF;
                     green <= 4'hF;
                     blue <= 4'hF;
-                }
+                
                 
                 // Game area
+                end 
+                
                 else if (v_counter > GAME_AREA_TOP && v_counter < V_DISPLAY - 1) begin
                     // Convert current pixel position to game coordinates
-                    reg [10:0] game_coord_x;
-                    reg [9:0] game_coord_y;
+                    
                     game_coord_x = (h_counter * `DISPLAY_WIDTH) / H_DISPLAY;
                     game_coord_y = ((v_counter - GAME_AREA_TOP) * `DISPLAY_HEIGHT) / (V_DISPLAY - GAME_AREA_TOP);
                     
