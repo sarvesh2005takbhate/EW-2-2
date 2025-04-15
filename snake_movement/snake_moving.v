@@ -1,5 +1,6 @@
-module snake_moving
-(
+//our game has a display of 640x480 and each block is of 16x16 pixels with total of 40x30 blocks
+
+module snake_moving(
 	input clk,			
 	input rst,			
 	
@@ -20,8 +21,21 @@ module snake_moving
 	input speedRecover,
 	
 	input [1:0]game_status, //input four game status
-	input 	reward_protected,
-	input	reward_slowly,
+	input reward_protected,
+	input reward_slowly,
+	
+	// New inputs for mines
+	input [5:0] mine_x_0,
+	input [5:0] mine_y_0,
+	input [5:0] mine_x_1,
+	input [5:0] mine_y_1,
+	input [5:0] mine_x_2,
+	input [5:0] mine_y_2,
+	input [5:0] mine_x_3,
+	input [5:0] mine_y_3,
+	input [3:0] mine_active,
+	input hit_mine,
+	input reduce_length,
 	
 	output reg [6:0]cube_num, //current length
 	
@@ -39,10 +53,13 @@ module snake_moving
 	localparam HEAD = 2'b01;
 	localparam BODY = 2'b10;
 	localparam WALL = 2'b11;
+	localparam MINE = 2'b10; // Same as BODY but we'll handle it specially
 	
-    localparam RESTART = 2'b00;
+	// Add game status parameters
+	localparam RESTART = 2'b00;
 	localparam START = 2'b01;
 	localparam PLAY = 2'b10;
+	localparam DIE = 2'b11;
 	
 	reg[31:0]cnt;
 	
@@ -69,19 +86,20 @@ module snake_moving
 	
 	always @(posedge clk or negedge rst) begin		
 		if(!rst)
-			direct_r <= RIGHT; //default direction right
+			direct_r <= DOWN; //default direction down 
 		else if(game_status == RESTART) 
-		    direct_r <= RIGHT;
+		    direct_r <= DOWN;
 		else
 			direct_r <= direct_next;
 	end
 
     
 	always @(posedge clk or negedge rst) begin
-		//default value, length=3, fixed position
+		//default value of snake with length=3 and fixed position 
+		//below we manually set the position of the snake and the length of the snake
 		if(!rst) begin
 			cnt <= 0;
-								
+												
 			cube_x[0] <= 10;
 			cube_y[0] <= 5;
 					
@@ -189,15 +207,16 @@ module snake_moving
                     hit_body <= 0; // snake longest 16                             
         end
 		else begin
-			cnt <= cnt + 1;
+			cnt <= cnt + 1; //count the clock cycles
+			
 			if(cnt >= speedValue) begin   //move 4 every second
 				cnt <= 0;
 				//default status play
 				if(game_status == PLAY) begin
-					//check hit wall
+					//collision condition with wall
 					if(((direct == UP && cube_y[0] == 1)|(direct == DOWN && cube_y[0] == 28)|(direct == LEFT && cube_x[0] == 1)|(direct == RIGHT && cube_x[0] == 38)) && reward_protected == 0)
 					   hit_wall <= 1; //hit wall
-					//hit body
+					//collision condition with body
 					else if( reward_protected == 0 &&((cube_y[0] == cube_y[1] && cube_x[0] == cube_x[1] && is_exist[1] == 1)|
 							(cube_y[0] == cube_y[2] && cube_x[0] == cube_x[2] && is_exist[2] == 1)|
 							(cube_y[0] == cube_y[3] && cube_x[0] == cube_x[3] && is_exist[3] == 1)|
@@ -215,6 +234,8 @@ module snake_moving
 							(cube_y[0] == cube_y[15] && cube_x[0] == cube_x[15] && is_exist[15] == 1)))
 							hit_body <= 1;
 					else begin
+						//over here it appears that each segment is following the head like a chain motion
+						//each segment takes the posotion of segment infront of it.
 						cube_x[1] <= cube_x[0];
 						cube_y[1] <= cube_y[0];
 										
@@ -259,6 +280,7 @@ module snake_moving
 										
 						cube_x[15] <= cube_x[14];
 						cube_y[15] <= cube_y[14];
+						//now if collosion is there then we don't move the head of the snake and decrease the length
 						case(direct)							
 							UP:
 							begin
@@ -294,7 +316,8 @@ module snake_moving
 			end
 		end
 	end
-	
+	//here the movement of the snake is controlled by the direction of the snake
+	//we change the direction of the snake here
 	always @(*) begin
 		direct_next = direct;		
         case(direct)	
@@ -355,7 +378,8 @@ module snake_moving
 	end
 	
 	always @(posedge clk or negedge rst) begin
-//after eat apple cube + 1
+        //here if the snake is dead then we don't want to increase the length of the snake
+		//else if the apple is eaten then the length of the snake is increased by 1
 		if(!rst) begin
 			is_exist <= 16'd7;
 			cube_num <= 3;
@@ -382,16 +406,25 @@ module snake_moving
 						addcube_state <= 0;				
 				end
 			endcase
+			
+			// Handle length reduction from mines
+			if(reduce_length && cube_num > 3) begin
+				cube_num <= cube_num - 1;
+				is_exist[cube_num-1] <= 0;
+			end
 		end
 	end
 	
-	reg[3:0]lox;
-	reg[3:0]loy;
-	
-	always @(x_pos or y_pos ) begin				
-		if(x_pos >= 0 && x_pos < 640 && y_pos >= 0 && y_pos < 480) begin
+	always @(x_pos or y_pos ) begin	//this is only executed when the x and y position of the snake changes
+		if(x_pos >= 0 && x_pos < 640 && y_pos >= 0 && y_pos < 480) begin //boundary check
 			if(x_pos[9:4] == 0 | y_pos[9:4] == 0 | x_pos[9:4] == 39 | y_pos[9:4] == 29)
 				snake = WALL;
+			// Display mines (using BODY representation but could be different)
+			else if((mine_active[0] && x_pos[9:4] == mine_x_0 && y_pos[9:4] == mine_y_0) ||
+				(mine_active[1] && x_pos[9:4] == mine_x_1 && y_pos[9:4] == mine_y_1) ||
+				(mine_active[2] && x_pos[9:4] == mine_x_2 && y_pos[9:4] == mine_y_2) ||
+				(mine_active[3] && x_pos[9:4] == mine_x_3 && y_pos[9:4] == mine_y_3))
+				snake = MINE;
 			else if(x_pos[9:4] == cube_x[0] && y_pos[9:4] == cube_y[0] && is_exist[0] == 1) 
 				snake = (die_flash == 1) ? HEAD : NONE;
 			else if

@@ -8,6 +8,17 @@ module vga_display
 	input [4:0]apple_y,
 	input   	[11:0]	VGA_reward,
 	input [1:0] game_status,
+	// Add mine-related inputs
+	input [5:0] mine_x_0,
+	input [5:0] mine_y_0,
+	input [5:0] mine_x_1,
+	input [5:0] mine_y_1,
+	input [5:0] mine_x_2,
+	input [5:0] mine_y_2,
+	input [5:0] mine_x_3,
+	input [5:0] mine_y_3,
+	input [3:0] mine_active,
+	input [7:0] score,  // Current score input
 	output reg[9:0]x_pos,
 	output reg[9:0]y_pos,	
 	output reg hsync,
@@ -95,8 +106,18 @@ module vga_display
 		.apple_y(apple_y),
 		.game_status(game_status),
 		.snake	(snake),
-		.VGA_data_interface(VGA_data_interface)
+		.VGA_data_interface(VGA_data_interface),
+		// Add mine-related connections
+		.mine_x_0(mine_x_0),
+		.mine_y_0(mine_y_0),
+		.mine_x_1(mine_x_1),
+		.mine_y_1(mine_y_1),
+		.mine_x_2(mine_x_2),
+		.mine_y_2(mine_y_2),
+		.mine_x_3(mine_x_3),
+		.mine_y_3(mine_y_3),
+		.mine_active(mine_active),
+		.score(score)   // Pass current score to interface_display
 	);
-
 
 endmodule

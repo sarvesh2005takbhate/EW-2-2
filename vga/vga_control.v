@@ -7,9 +7,10 @@ module vga_control(
     input [1:0]snake,
     input [5:0]apple_x,
     input [4:0]apple_y,
-    input [11:0]    VGA_reward,
+    input [11:0] VGA_reward,
     input [1:0] game_status,
     input [7:0] score,  // Add score input
+    // Remove high_score input
     // Add mine-related inputs
     input [5:0] mine_x_0,
     input [5:0] mine_y_0,
@@ -52,6 +53,7 @@ module vga_control(
 		.apple_y(apple_y),
         .VGA_reward(VGA_reward),
         .score(score), // Pass score to vga_display
+        // Remove high_score parameter
         // Add mine-related connections
         .mine_x_0(mine_x_0),
         .mine_y_0(mine_y_0),

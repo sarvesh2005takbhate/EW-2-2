@@ -107,7 +107,7 @@ module top_greedy_snake
 		.hit_mine(hit_mine),
 		.reduce_length(reduce_length)
 	);
-	
+
 	snake_moving u_snake_moving (
 	    .clk(clk),
 		.rst(rst_n),
