@@ -1,8 +1,9 @@
 `timescale 1ns / 1ps
 
-module vga_control(
+module vga_generator(
 	input clk,
     input rst,
+    
 
     input [1:0]snake,
     input [5:0]apple_x,

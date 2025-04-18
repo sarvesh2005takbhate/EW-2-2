@@ -10,8 +10,10 @@ module game_status_control
 	output reg [1:0]game_status,
 	input hit_wall,
 	input hit_body,
+	input hit_min_length, // New input for minimum length reached
 	output reg die_flash,
-	output reg restart
+	output reg restart,
+	input game_complete // New input to know if both teams have played
 );
 
 	localparam RESTART = 2'b00;
@@ -49,7 +51,7 @@ module game_status_control
 					    game_status <= START;
 				end
 				PLAY:begin
-					if(hit_wall | hit_body)
+					if(hit_wall | hit_body | hit_min_length) // Add minimum length check
 					   game_status <= DIE;
 					else
 					   game_status <= PLAY;

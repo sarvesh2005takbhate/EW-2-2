@@ -37,10 +37,11 @@ module snake_moving(
 	input hit_mine,
 	input reduce_length,
 	
-	output reg [6:0]cube_num, //current length
+	output reg [7:0]cube_num, //current length
 	
 	output reg hit_body, //hit self
 	output reg hit_wall, //hit wall
+	output reg hit_min_length, // New output for minimum length reached
 	input die_flash //game over
 );
 	
@@ -73,9 +74,9 @@ module snake_moving(
 	reg change_to_up;
 	reg change_to_down;
 	
-	reg [5:0]cube_x[15:0];
-	reg [5:0]cube_y[15:0];
-	reg [15:0]is_exist;
+	reg [5:0]cube_x[29:0];
+	reg [5:0]cube_y[29:0];
+	reg [29:0]is_exist;
 	
 	reg addcube_state;
 	
@@ -148,6 +149,48 @@ module snake_moving(
 			cube_x[15] <= 0;
 			cube_y[15] <= 0;
 
+			cube_x[16] <= 0;
+			cube_y[16] <= 0;
+					
+			cube_x[17] <= 0;
+			cube_y[17] <= 0;
+					
+			cube_x[18] <= 0;
+			cube_y[18] <= 0;
+					
+			cube_x[19] <= 0;
+			cube_y[19] <= 0;
+					
+			cube_x[20] <= 0;
+			cube_y[20] <= 0;
+					
+			cube_x[21] <= 0;
+			cube_y[21] <= 0;
+					
+			cube_x[22] <= 0;
+			cube_y[22] <= 0;
+					
+			cube_x[23] <= 0;
+			cube_y[23] <= 0;
+					
+			cube_x[24] <= 0;
+			cube_y[24] <= 0;
+					
+			cube_x[25] <= 0;
+			cube_y[25] <= 0;
+					
+			cube_x[26] <= 0;
+			cube_y[26] <= 0;
+					
+			cube_x[27] <= 0;
+			cube_y[27] <= 0;
+					
+			cube_x[28] <= 0;
+			cube_y[28] <= 0;
+					
+			cube_x[29] <= 0;
+			cube_y[29] <= 0;
+
 			hit_wall <= 0;
 			hit_body <= 0;
 		end		
@@ -202,9 +245,51 @@ module snake_moving(
                                         
                     cube_x[15] <= 0;
                     cube_y[15] <= 0;
+
+                    cube_x[16] <= 0;
+                    cube_y[16] <= 0;
+                                        
+                    cube_x[17] <= 0;
+                    cube_y[17] <= 0;
+                                        
+                    cube_x[18] <= 0;
+                    cube_y[18] <= 0;
+                                        
+                    cube_x[19] <= 0;
+                    cube_y[19] <= 0;
+                                        
+                    cube_x[20] <= 0;
+                    cube_y[20] <= 0;
+                                        
+                    cube_x[21] <= 0;
+                    cube_y[21] <= 0;
+                                        
+                    cube_x[22] <= 0;
+                    cube_y[22] <= 0;
+                                        
+                    cube_x[23] <= 0;
+                    cube_y[23] <= 0;
+                                        
+                    cube_x[24] <= 0;
+                    cube_y[24] <= 0;
+                                        
+                    cube_x[25] <= 0;
+                    cube_y[25] <= 0;
+                                        
+                    cube_x[26] <= 0;
+                    cube_y[26] <= 0;
+                                        
+                    cube_x[27] <= 0;
+                    cube_y[27] <= 0;
+                                        
+                    cube_x[28] <= 0;
+                    cube_y[28] <= 0;
+                                        
+                    cube_x[29] <= 0;
+                    cube_y[29] <= 0;
                     
                     hit_wall <= 0;
-                    hit_body <= 0; // snake longest 16                             
+                    hit_body <= 0; // snake longest 30                             
         end
 		else begin
 			cnt <= cnt + 1; //count the clock cycles
@@ -213,10 +298,10 @@ module snake_moving(
 				cnt <= 0;
 				//default status play
 				if(game_status == PLAY) begin
-					//collision condition with wall
+					// Wall collision detection
 					if(((direct == UP && cube_y[0] == 1)|(direct == DOWN && cube_y[0] == 28)|(direct == LEFT && cube_x[0] == 1)|(direct == RIGHT && cube_x[0] == 38)) && reward_protected == 0)
 					   hit_wall <= 1; //hit wall
-					//collision condition with body
+					// Body collision detection
 					else if( reward_protected == 0 &&((cube_y[0] == cube_y[1] && cube_x[0] == cube_x[1] && is_exist[1] == 1)|
 							(cube_y[0] == cube_y[2] && cube_x[0] == cube_x[2] && is_exist[2] == 1)|
 							(cube_y[0] == cube_y[3] && cube_x[0] == cube_x[3] && is_exist[3] == 1)|
@@ -231,7 +316,21 @@ module snake_moving(
 							(cube_y[0] == cube_y[12] && cube_x[0] == cube_x[12] && is_exist[12] == 1)|
 							(cube_y[0] == cube_y[13] && cube_x[0] == cube_x[13] && is_exist[13] == 1)|
 							(cube_y[0] == cube_y[14] && cube_x[0] == cube_x[14] && is_exist[14] == 1)|
-							(cube_y[0] == cube_y[15] && cube_x[0] == cube_x[15] && is_exist[15] == 1)))
+							(cube_y[0] == cube_y[15] && cube_x[0] == cube_x[15] && is_exist[15] == 1)|
+							(cube_y[0] == cube_y[16] && cube_x[0] == cube_x[16] && is_exist[16] == 1)|
+							(cube_y[0] == cube_y[17] && cube_x[0] == cube_x[17] && is_exist[17] == 1)|
+							(cube_y[0] == cube_y[18] && cube_x[0] == cube_x[18] && is_exist[18] == 1)|
+							(cube_y[0] == cube_y[19] && cube_x[0] == cube_x[19] && is_exist[19] == 1)|
+							(cube_y[0] == cube_y[20] && cube_x[0] == cube_x[20] && is_exist[20] == 1)|
+							(cube_y[0] == cube_y[21] && cube_x[0] == cube_x[21] && is_exist[21] == 1)|
+							(cube_y[0] == cube_y[22] && cube_x[0] == cube_x[22] && is_exist[22] == 1)|
+							(cube_y[0] == cube_y[23] && cube_x[0] == cube_x[23] && is_exist[23] == 1)|
+							(cube_y[0] == cube_y[24] && cube_x[0] == cube_x[24] && is_exist[24] == 1)|
+							(cube_y[0] == cube_y[25] && cube_x[0] == cube_x[25] && is_exist[25] == 1)|
+							(cube_y[0] == cube_y[26] && cube_x[0] == cube_x[26] && is_exist[26] == 1)|
+							(cube_y[0] == cube_y[27] && cube_x[0] == cube_x[27] && is_exist[27] == 1)|
+							(cube_y[0] == cube_y[28] && cube_x[0] == cube_x[28] && is_exist[28] == 1)|
+							(cube_y[0] == cube_y[29] && cube_x[0] == cube_x[29] && is_exist[29] == 1)))
 							hit_body <= 1;
 					else begin
 						//over here it appears that each segment is following the head like a chain motion
@@ -280,6 +379,48 @@ module snake_moving(
 										
 						cube_x[15] <= cube_x[14];
 						cube_y[15] <= cube_y[14];
+
+						cube_x[16] <= cube_x[15];
+						cube_y[16] <= cube_y[15];
+										
+						cube_x[17] <= cube_x[16];
+						cube_y[17] <= cube_y[16];
+										
+						cube_x[18] <= cube_x[17];
+						cube_y[18] <= cube_y[17];
+										
+						cube_x[19] <= cube_x[18];
+						cube_y[19] <= cube_y[18];
+										
+						cube_x[20] <= cube_x[19];
+						cube_y[20] <= cube_y[19];
+										
+						cube_x[21] <= cube_x[20];
+						cube_y[21] <= cube_y[20];
+										
+						cube_x[22] <= cube_x[21];
+						cube_y[22] <= cube_y[21];
+										
+						cube_x[23] <= cube_x[22];
+						cube_y[23] <= cube_y[22];
+										
+						cube_x[24] <= cube_x[23];
+						cube_y[24] <= cube_y[23];
+										
+						cube_x[25] <= cube_x[24];
+						cube_y[25] <= cube_y[24];
+										
+						cube_x[26] <= cube_x[25];
+						cube_y[26] <= cube_y[25];
+										
+						cube_x[27] <= cube_x[26];
+						cube_y[27] <= cube_y[26];
+										 
+						cube_x[28] <= cube_x[27];
+						cube_y[28] <= cube_y[27];
+										
+						cube_x[29] <= cube_x[28];
+						cube_y[29] <= cube_y[28];
 						//now if collosion is there then we don't move the head of the snake and decrease the length
 						case(direct)							
 							UP:
@@ -381,14 +522,16 @@ module snake_moving(
         //here if the snake is dead then we don't want to increase the length of the snake
 		//else if the apple is eaten then the length of the snake is increased by 1
 		if(!rst) begin
-			is_exist <= 16'd7;
+			is_exist <= 30'd7;
 			cube_num <= 3;
 			addcube_state <= 0;
+			hit_min_length <= 0; // Initialize the new output
 		end  
 		else if (game_status == RESTART) begin
-		      is_exist <= 16'd7;
+		      is_exist <= 30'd7;
               cube_num <= 3;
               addcube_state <= 0;
+              hit_min_length <= 0; // Reset the new output
          end
 		else begin			
 			case(addcube_state) //check apple == snake head
@@ -411,6 +554,10 @@ module snake_moving(
 			if(reduce_length && cube_num > 3) begin
 				cube_num <= cube_num - 1;
 				is_exist[cube_num-1] <= 0;
+				hit_min_length <= (cube_num == 4); // Signal if length will become 3
+			end
+			else begin
+				hit_min_length <= 0;
 			end
 		end
 	end
@@ -442,7 +589,21 @@ module snake_moving(
 				 (x_pos[9:4] == cube_x[12] && y_pos[9:4] == cube_y[12] && is_exist[12] == 1)|
 				 (x_pos[9:4] == cube_x[13] && y_pos[9:4] == cube_y[13] && is_exist[13] == 1)|
 				 (x_pos[9:4] == cube_x[14] && y_pos[9:4] == cube_y[14] && is_exist[14] == 1)|
-				 (x_pos[9:4] == cube_x[15] && y_pos[9:4] == cube_y[15] && is_exist[15] == 1))
+				 (x_pos[9:4] == cube_x[15] && y_pos[9:4] == cube_y[15] && is_exist[15] == 1)|
+				 (x_pos[9:4] == cube_x[16] && y_pos[9:4] == cube_y[16] && is_exist[16] == 1)|
+				 (x_pos[9:4] == cube_x[17] && y_pos[9:4] == cube_y[17] && is_exist[17] == 1)|
+				 (x_pos[9:4] == cube_x[18] && y_pos[9:4] == cube_y[18] && is_exist[18] == 1)|
+				 (x_pos[9:4] == cube_x[19] && y_pos[9:4] == cube_y[19] && is_exist[19] == 1)|
+				 (x_pos[9:4] == cube_x[20] && y_pos[9:4] == cube_y[20] && is_exist[20] == 1)|
+				 (x_pos[9:4] == cube_x[21] && y_pos[9:4] == cube_y[21] && is_exist[21] == 1)|
+				 (x_pos[9:4] == cube_x[22] && y_pos[9:4] == cube_y[22] && is_exist[22] == 1)|
+				 (x_pos[9:4] == cube_x[23] && y_pos[9:4] == cube_y[23] && is_exist[23] == 1)|
+				 (x_pos[9:4] == cube_x[24] && y_pos[9:4] == cube_y[24] && is_exist[24] == 1)|
+				 (x_pos[9:4] == cube_x[25] && y_pos[9:4] == cube_y[25] && is_exist[25] == 1)|
+				 (x_pos[9:4] == cube_x[26] && y_pos[9:4] == cube_y[26] && is_exist[26] == 1)|
+				 (x_pos[9:4] == cube_x[27] && y_pos[9:4] == cube_y[27] && is_exist[27] == 1)|
+				 (x_pos[9:4] == cube_x[28] && y_pos[9:4] == cube_y[28] && is_exist[28] == 1)|
+				 (x_pos[9:4] == cube_x[29] && y_pos[9:4] == cube_y[29] && is_exist[29] == 1))
 				 snake = (die_flash == 1) ? BODY : NONE;
 			else snake = NONE;
 		end
