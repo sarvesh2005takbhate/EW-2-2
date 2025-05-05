@@ -57,3 +57,6 @@ This project implements the classic **Snake Game** using **Verilog HDL**, target
 
 ---
 
+### Demonstration link
+
+- https://youtu.be/fCc7-x8J_OQ?si=85MgjoPG0ffG0bkp
