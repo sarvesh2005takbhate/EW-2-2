@@ -56,6 +56,3 @@ This project implements the classic **Snake Game** using **Verilog HDL**, target
 - Verilog counter logic is used to increment and update the `score` output vector mapped to the LED pins.
 
 ---
-
-## 🗂️ Folder Structure
-
