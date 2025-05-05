@@ -30,7 +30,7 @@ module interface_display
     localparam WALL = 2'b11;
     localparam HEAD_COLOR = 12'b0000_1111_0000;
     localparam BODY_COLOR = 12'b1111_1111_0000;
-    localparam MINE_COLOR = 12'b1111_0000_0000; // Bright red color
+    localparam MINE_COLOR = 12'b1111_0000_0000; 
 
     localparam RESTART = 2'b00;
 	localparam START = 2'b01;
@@ -41,21 +41,18 @@ module interface_display
     localparam TEAM2_COLOR = 12'b0000_0000_1111; // Blue
     localparam WINNER_COLOR = 12'b1111_1111_0000; // Yellow
 
-    // Parameters for displaying digits
     localparam DIGIT_WIDTH = 24;
     localparam DIGIT_HEIGHT = 32;
-    localparam SCORE_X = 280; // X position for score display
-    localparam SCORE_Y = 200; // Y position for score display
+    localparam SCORE_X = 280; 
+    localparam SCORE_Y = 200; 
     localparam SCORE_COLOR = 12'b1111_1111_0000; // Yellow color for score
 
-    // Updated parameters for text positioning with better spacing
     parameter TITLE_X = 240;  // Center "SNAKE GAME" horizontally
     parameter TITLE_Y = 80;   // Position near the top
     parameter PLAYER1_X = 190; // Position for P1 indicator
     parameter PLAYER2_X = 410; // Position for P2 indicator
     parameter PLAYER_Y = 140; // Below the title
 
-    // Function to determine if current pixel is part of a specific digit
     function is_digit;
         input [3:0] digit;
         input [4:0] x;
@@ -163,6 +160,7 @@ module interface_display
                     9: current_char = "E";
                     default: current_char = " ";
                 endcase
+
 
                 // Only process pixels within the text range
                 if (x_pos >= TITLE_X && x_pos < TITLE_X + 10*8) begin
@@ -434,3 +432,4 @@ module interface_display
         end
     end
 endmodule
+

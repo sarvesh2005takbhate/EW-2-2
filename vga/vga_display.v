@@ -29,6 +29,7 @@ module vga_display(
     output [11:0]color_out
 );
 
+
     reg [19:0]clk_cnt;
     reg [9:0]line_cnt;
     reg clk_25M;

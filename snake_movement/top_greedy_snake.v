@@ -215,7 +215,6 @@ module top_greedy_snake
 		.head_y(head_y),
 		.add_cube(add_cube),
 		.game_status(game_status),
-		.speedRecover(speedRecover),
 		.cube_num(cube_num),
 		.hit_body(hit_body),
 		.hit_wall(hit_wall),

@@ -15,26 +15,23 @@ module mine_generator(
     output reg [5:0] mine_x_3,
     output reg [5:0] mine_y_3,
     
-    output reg [3:0] mine_active,  // Which mines are active
-    output reg hit_mine,           // Flag when snake hits a mine
-    output reg reduce_length        // Signal to reduce snake length
+    output reg [3:0] mine_active,
+    output reg hit_mine,           
+    output reg reduce_length        
 );
 
-    // Constants for game states
     localparam RESTART = 2'b00;
     localparam START = 2'b01;
     localparam PLAY = 2'b10;
+
+    parameter MINE_INTERVAL = 25_000_000;  
+    parameter MINE_RECOVERY = 5_000_000;   
     
-    // Mine placement and recovery parameters
-    parameter MINE_INTERVAL = 25_000_000;  // Time between mine placements
-    parameter MINE_RECOVERY = 5_000_000;   // Recovery time after hitting a mine
-    
-    // Internal registers
-    reg [31:0] mine_timer;
+
+    reg [31:0] mine_timer;  
     reg [31:0] random_num;
     reg [1:0] mine_state;
     
-    // Random number generator - simple LFSR
     always @(posedge clk) begin
         random_num <= random_num + 1237;  // Different increment than apple for variety
     end
@@ -101,11 +98,10 @@ module mine_generator(
                         mine_x_3 <= (random_num[18:13] % 37) + 1;
                         mine_y_3 <= (random_num[24:19] % 27) + 1;
                     end
-                    default: ; // Do nothing for other combinations
+                    default: ; 
                 endcase
             end
             
-            // Check for collision with mines
             if(!hit_mine) begin
                 if((mine_active[0] && head_x == mine_x_0 && head_y == mine_y_0) ||
                    (mine_active[1] && head_x == mine_x_1 && head_y == mine_y_1) ||
@@ -129,13 +125,12 @@ module mine_generator(
                 end
             end
             else begin
-                // Handle mine collision recovery
                 if(mine_state == 0) begin
                     mine_state <= 1;
-                    reduce_length <= 0;  // Only reduce length for one clock cycle
+                    reduce_length <= 0;  
                 end
                 else if(mine_state == 1 && mine_timer >= MINE_RECOVERY) begin
-                    hit_mine <= 0;  // Reset hit flag after recovery period
+                    hit_mine <= 0; 
                     mine_state <= 0;
                 end
             end

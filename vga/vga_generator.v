@@ -28,6 +28,7 @@ module vga_generator(
     output [11:0] color_out
     );
     
+   
     
     
     wire clk_n;

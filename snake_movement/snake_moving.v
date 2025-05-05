@@ -18,12 +18,10 @@ module snake_moving(
 	output [5:0]head_y,
 	
 	input add_cube, //add length
-	input speedRecover,
 	
 	input [1:0]game_status, //input four game status
 	input reward_protected,
 	input reward_slowly,
-	
 	// New inputs for mines
 	input [5:0] mine_x_0,
 	input [5:0] mine_y_0,
@@ -500,7 +498,7 @@ module snake_moving(
 		    end	
 	    endcase
 	end
-	
+	//here initialize the directions to 1
 	always @(posedge clk) begin
 		if(left_press == 1)
 			change_to_left <= 1;
