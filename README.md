@@ -57,16 +57,3 @@ This project implements the classic **Snake Game** using **Verilog HDL**, target
 
 ---
 
-## 🎮 Monitor Output
-
-Here are snapshots of the game running on the VGA monitor:
-
-### 🟩 Game Grid Display
-![Game Running](images/monitor1.jpg)
-
-### 🔢 LED Scoreboard
-![Score LEDs](images/score_leds.jpg)
-
-### 🐍 Snake Movement
-![Snake Movement](images/monitor2.jpg)
-
